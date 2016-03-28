@@ -11,6 +11,17 @@ var EventEmitter = function () {
         this._events = new Map();
     }
 
+    /**
+     * Returns the listener array for the specified event.
+     * Will initialise the event object and listener arrays if required.
+     * Will return an object if you use a regex search. The object contains keys for each matched event. So /ba[rz]/ might return an object containing bar and baz. But only if you have either defined them with defineEvent or added some listeners to them.
+     * Each property in the object response is an array of listener functions.
+     *
+     * @param {String|RegExp} evt Name of the event to return the listeners from.
+     * @return {Function[]|Object} All listener functions for the event.
+     */
+
+
     _createClass(EventEmitter, [{
         key: "getListeners",
         value: function getListeners(evt) {
@@ -52,6 +63,9 @@ var EventEmitter = function () {
 
             return response;
         }
+    }, {
+        key: "getListeners",
+        value: function getListeners(evt) {}
     }]);
 
     return EventEmitter;

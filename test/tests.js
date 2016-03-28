@@ -47,9 +47,9 @@
 
             var listeners = ee.getListeners(/ba[rz]/);
 
-            assert.strictEqual(listeners.bar.length + listeners.baz.length, 2);
-            assert.strictEqual(listeners.bar[0].listener(), 'bar');
-            assert.strictEqual(listeners.baz[0].listener(), 'baz');
+            assert.strictEqual(listeners.get('bar').length + listeners.get('baz').length, 2);
+            assert.strictEqual(listeners.get('bar')[0].get('listener')(), 'bar');
+            assert.strictEqual(listeners.get('baz')[0].get('listener')(), 'baz');
         });
 
         test('does not return matched sub-strings', function () {
