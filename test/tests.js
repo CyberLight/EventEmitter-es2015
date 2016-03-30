@@ -77,11 +77,11 @@
             ee = new EventEmitter();
         });
 
-        test('takes an array of objects and returns an array of functions', function () {
+        test('takes an array of maps and returns an array of functions', function () {
             var input = [
-                {listener: fn1},
-                {listener: fn2},
-                {listener: fn3}
+                new Map([ ['listener', fn1] ]),
+                new Map([ ['listener', fn2] ]),
+                new Map([ ['listener', fn3] ])
             ];
             var output = ee.flattenListeners(input);
             assert.deepEqual(output, [fn1, fn2, fn3]);

@@ -83,13 +83,16 @@ class EventEmitter {
      * @api private
      */
     indexOfListener (listeners, listener) {
-        let i = listeners.length;
-        while (i--) {
-            if (listeners[i].listener === listener) {
-                return i;
-            }
-        }
-
-        return -1;
+        return listeners.findIndex(map => map.get('listener') === listener);
     }
+
+    /**
+     * Takes a list of listener objects and flattens it into a list of listener functions.
+     *
+     * @param {Object[]} listeners Raw listener objects.
+     * @return {Function[]} Just the listener functions.
+     */
+    flattenListeners(listeners) {
+        return listeners.map(map => map.get('listener'));
+    };
 }
