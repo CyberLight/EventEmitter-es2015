@@ -5,6 +5,9 @@
     // Setup Mocha and Chai.
     mocha.setup('tdd');
     var assert = chai.assert;
+    assert.isMap = assert.isMap || function (val, msg) {
+        new chai.Assertion(val, msg).to.be.a('map');
+    };
 
     function flattenCheck(check) {
         var sorted = check.slice(0);
@@ -60,7 +63,7 @@
 
             var listeners = ee.getListeners('fooBar');
             assert.strictEqual(listeners.length, 1);
-            assert.strictEqual(listeners[0].listener, check);
+            assert.strictEqual(listeners[0].get('listener'), check);
         });
     });
 
@@ -263,15 +266,15 @@
 
         test('returns an object for strings', function () {
             var listeners = ee.getListenersAsObject('bar');
-            assert.isObject(listeners);
-            assert.lengthOf(listeners.bar, 1);
+            assert.isMap(listeners);
+            assert.lengthOf(listeners.get('bar'), 1);
         });
 
         test('returns an object for regexs', function () {
             var listeners = ee.getListenersAsObject(/ba[rz]/);
-            assert.isObject(listeners);
-            assert.lengthOf(listeners.bar, 1);
-            assert.lengthOf(listeners.baz, 1);
+            assert.isMap(listeners);
+            assert.lengthOf(listeners.get('bar'), 1);
+            assert.lengthOf(listeners.get('baz'), 1);
         });
     });
 
