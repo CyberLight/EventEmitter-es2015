@@ -1,5 +1,5 @@
 class EventEmitter {
-    constructor (){
+    constructor() {
         this._events = new Map();
     }
 
@@ -12,13 +12,13 @@ class EventEmitter {
      * @param {String|RegExp} evt Name of the event to return the listeners from.
      * @return {Function[]|Object} All listener functions for the event.
      */
-    getListeners (evt) {
+    getListeners(evt) {
         let response;
 
-        if( evt instanceof RegExp ){
+        if (evt instanceof RegExp) {
             response = new Map();
-            for(let [key, value] of this._events){
-                if(evt.test(key)){
+            for (let [key, value] of this._events) {
+                if (evt.test(key)) {
                     response.set(key, value);
                 }
             }
@@ -39,12 +39,12 @@ class EventEmitter {
      * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
      * @return {Object} Current instance of EventEmitter for chaining.
      */
-    addListener (evt, listener) {
+    addListener(evt, listener) {
         var listeners = this.getListenersAsObject(evt);
         let listenerIsWrapped = typeof listener == "object";
-        
-        for( var [key, eventListeners] of listeners ) {
-            if(this.indexOfListener(eventListeners, listener) === -1){
+
+        for (var [key, eventListeners] of listeners) {
+            if (this.indexOfListener(eventListeners, listener) === -1) {
                 this._events.get(key).push(listenerIsWrapped ? listener : new Map([
                     ['listener', listener],
                     ['once', false]
@@ -61,11 +61,11 @@ class EventEmitter {
      * @param {String|RegExp} evt Name of the event to return the listeners from.
      * @return {Object} All listener functions for an event in an object.
      */
-    getListenersAsObject (evt) {
+    getListenersAsObject(evt) {
         let listeners = this.getListeners(evt);
         let response;
 
-        if(Array.isArray(listeners)){
+        if (Array.isArray(listeners)) {
             response = new Map();
             response.set(evt, listeners);
         }
@@ -81,7 +81,7 @@ class EventEmitter {
      * @return {Number} Index of the specified listener, -1 if not found
      * @api private
      */
-    indexOfListener (listeners, listener) {
+    indexOfListener(listeners, listener) {
         return listeners.findIndex(map => map.get('listener') === listener);
     }
 
@@ -132,11 +132,11 @@ class EventEmitter {
      */
     emitEvent(evt, args) {
         var listenersMap = this.getListenersAsObject(evt);
-        for(let [event, listeners] of listenersMap) {
+        for (let [event, listeners] of listenersMap) {
             let copyOfListeners = listeners.slice();
-            for(var listenerMap of copyOfListeners){
+            for (var listenerMap of copyOfListeners) {
                 let [listener, once] = listenerMap.values();
-                if(once){
+                if (once) {
                     this.removeListener(event, listener);
                 }
                 let response = listener(...args || []);
@@ -158,9 +158,9 @@ class EventEmitter {
      */
     removeListener(evt, listener) {
         var listeners = this.getListenersAsObject(evt);
-        for (var [event, eventListeners] of listeners){
+        for (var [event, eventListeners] of listeners) {
             var index = this.indexOfListener(eventListeners, listener);
-            if(index !== -1){
+            if (index !== -1) {
                 this._events.get(event).splice(index, 1);
             }
         }
