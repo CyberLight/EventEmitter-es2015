@@ -139,7 +139,7 @@ class EventEmitter {
                 if (once) {
                     this.removeListener(event, listener);
                 }
-                let response = listener(...args || []);
+                let response = listener.call(this, ...args || []);
                 if (response === this._getOnceReturnValue()) {
                     this.removeListener(evt, listener);
                 }
@@ -178,7 +178,7 @@ class EventEmitter {
     setOnceReturnValue(value) {
         this._onceReturnValue = value;
         return this;
-    };
+    }
 
     /**
      * Fetches the current value to check against when executing listeners. If
@@ -195,7 +195,7 @@ class EventEmitter {
         else {
             return true;
         }
-    };
+    }
 
     /**
      * Semi-alias of addListener. It will add a listener that will be
@@ -210,5 +210,9 @@ class EventEmitter {
             ['listener', listener],
             ['once', true]
         ]));
-    };
+    }
+
+    trigger(){
+        return this.emitEvent(...arguments);
+    }
 }
