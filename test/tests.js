@@ -204,10 +204,10 @@
         });
 
         test('can handle removing events that have not been added', function() {
-            assert.notProperty(ee, '_events');
+            assert.isMap(ee._events);
             ee.removeEvent('foo');
             assert.property(ee, '_events');
-            assert.isObject(ee._events);
+            assert.isMap(ee._events);
         });
 
         test('actually removes events', function() {
@@ -238,20 +238,20 @@
             assert.deepEqual(ee.flattenListeners(listeners), [fn2]);
 
             ee.removeListener('bar', fn2);
-            assert.deepEqual(ee.flattenListeners(ee._events.bar), []);
+            assert.deepEqual(ee.flattenListeners(ee._events.get('bar')), []);
         });
 
         test('removes with a regex', function() {
-            ee.addListeners({
-                foo: [fn1, fn2, fn3, fn4, fn5],
-                bar: [fn1, fn2, fn3, fn4, fn5],
-                baz: [fn1, fn2, fn3, fn4, fn5]
-            });
+            ee.addListeners(new Map([
+                ['foo', [fn1, fn2, fn3, fn4, fn5] ],
+                ['bar', [fn1, fn2, fn3, fn4, fn5] ],
+                ['baz', [fn1, fn2, fn3, fn4, fn5] ]
+            ]));
 
             ee.removeListener(/ba[rz]/, fn3);
-            assert.deepEqual(ee.flattenListeners(ee.getListeners('foo')), [fn5, fn4, fn3, fn2, fn1]);
-            assert.deepEqual(ee.flattenListeners(ee.getListeners('bar')), [fn5, fn4, fn2, fn1]);
-            assert.deepEqual(ee.flattenListeners(ee.getListeners('baz')), [fn5, fn4, fn2, fn1]);
+            assert.deepEqual(ee.flattenListeners(ee.getListeners('foo')), [fn5, fn4, fn3, fn2, fn1].reverse());
+            assert.deepEqual(ee.flattenListeners(ee.getListeners('bar')), [fn5, fn4, fn2, fn1].reverse());
+            assert.deepEqual(ee.flattenListeners(ee.getListeners('baz')), [fn5, fn4, fn2, fn1].reverse());
         });
     });
 
