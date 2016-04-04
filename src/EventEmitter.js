@@ -1,3 +1,6 @@
+var exports = this;
+var originalGlobalValue = exports.EventEmitter;
+
 class EventEmitter {
     constructor() {
         this._events = new Map();
@@ -228,7 +231,7 @@ class EventEmitter {
             // Remove all listeners for the specified event
             this._events.delete(evt);
         }else if(evt instanceof RegExp) {
-            let eventsToDelete = Array.from(m.keys()).filter(e => evt.test());
+            let eventsToDelete = Array.from(this._events.keys()).filter(e => evt.test());
             eventsToDelete.forEach(en => this._events.delete(en));
         }else{
             // Remove all listeners in all events
@@ -285,19 +288,42 @@ class EventEmitter {
         // If evt is an object then pass each of its properties to this method
         if (typeof evt == 'object' && evt.toString() == "[object Map]") {
             for(var [event, listener] of evt){
-                if (listener === 'function'){
+                if (typeof listener === 'function'){
                     single.call(this, event, listener);
                 }else if(Array.isArray(listener)){
                     multiple.call(this, event, listener);
                 }
             }
-        } else if(typeof evt == 'string' && Array.isArray(listeners)){
+        } else if(Array.isArray(listeners)){
               listeners.forEach(listener => single.call(this, evt, listener));
         }
         return this;
     }
 
+    /**
+     * Alias of removeEvent.
+     *
+     * Added to mirror the node API.
+     */
+    removeAllListeners(){
+        return this.removeEvent(...arguments);
+    }
+
+    emit() {
+        let [evt, ...args] = arguments;
+        return this.emitEvent(evt, args);
+    };
+
+    on(){
+        return this.addListener(...arguments);
+    }
+
     trigger(){
         return this.emitEvent(...arguments);
     }
+
+    static noConflict() {
+        exports.EventEmitter = originalGlobalValue;
+        return EventEmitter;
+    };
 }
